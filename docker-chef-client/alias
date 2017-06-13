@@ -1,0 +1,4 @@
+function chef-client() {
+#	docker run -it --rm -v `pwd`:/workdir chef-client $@
+	docker exec -it chef-client-instance chef-client $@
+}
