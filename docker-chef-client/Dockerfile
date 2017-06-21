@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y \
   && echo "deb https://packages.chef.io/repos/apt/stable xenial main" > chef-stable.list \
   && mv chef-stable.list /etc/apt/sources.list.d/ \
   && apt-get update \
-  && apt-get install -y chef \
+  && apt-get install -y chef chefdk \
   && apt-get -y purge curl wget \
 && rm -rf /var/lib/apt/lists/*
 ENTRYPOINT ["chef-client"]

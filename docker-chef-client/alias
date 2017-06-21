@@ -1,4 +1,26 @@
+CHEF_INSTANCE_NAME=chef-client-instance
+CHEF_DOCKER_CMD="docker exec -it"
+
 function chef-client() {
-#	docker run -it --rm -v `pwd`:/workdir chef-client $@
-	docker exec -it chef-client-instance chef-client $@
+	$CHEF_DOCKER_CMD $CHEF_INSTANCE_NAME chef-client $@
+}
+
+function chef() {
+  $CHEF_DOCKER_CMD $CHEF_INSTANCE_NAME chef $@
+}
+
+function kitchen() {
+  $CHEF_DOCKER_CMD $CHEF_INSTANCE_NAME kitchen $@
+}
+
+function delivery() {
+  $CHEF_DOCKER_CMD $CHEF_INSTANCE_NAME delivery $@
+}
+
+function berks() {
+  $CHEF_DOCKER_CMD $CHEF_INSTANCE_NAME berks $@
+}
+
+function inspec() {
+  $CHEF_DOCKER_CMD $CHEF_INSTANCE_NAME inspec $@
 }
