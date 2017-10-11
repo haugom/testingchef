@@ -1,26 +1,39 @@
-CHEF_INSTANCE_NAME=chef-client-instance
-CHEF_DOCKER_CMD="docker exec -it"
+CHEF_IMAGE_NAME=chef-client
 
 function chef-client() {
-	$CHEF_DOCKER_CMD $CHEF_INSTANCE_NAME chef-client $@
+  dockerrun chef-client $@
 }
 
 function chef() {
-  $CHEF_DOCKER_CMD $CHEF_INSTANCE_NAME chef $@
+  dockerrun chef $@
 }
 
 function kitchen() {
-  $CHEF_DOCKER_CMD $CHEF_INSTANCE_NAME kitchen $@
+  dockerrun kitchen $@
 }
 
 function delivery() {
-  $CHEF_DOCKER_CMD $CHEF_INSTANCE_NAME delivery $@
+  dockerrun delivery $@
 }
 
 function berks() {
-  $CHEF_DOCKER_CMD $CHEF_INSTANCE_NAME berks $@
+  dockerrun berks $@
 }
 
 function inspec() {
-  $CHEF_DOCKER_CMD $CHEF_INSTANCE_NAME inspec $@
+  dockerrun inspec $@
+}
+
+function dockerrun() {
+  CMD=$1
+  shift
+  docker run \
+    -it \
+    --rm \
+    -u $UID:$UID \
+    -v `pwd`:/workdir \
+    --workdir /workdir \
+    --entrypoint $CMD \
+    $CHEF_IMAGE_NAME \
+    "$@"
 }
