@@ -28,6 +28,10 @@ function knife() {
   dockerrun knife $@
 }
 
+function chef-shell() {
+  dockerrun chef-shell $@
+}
+
 function dockerrun() {
   DIGITALOCEAN_TOKEN=$(cat ~/keys/terraform-digitalocean.token)
   DIGITALOCEAN_SSH_KEY_IDS=$(cat ~/keys/terraform-digitalocean.ssh_keys)
