@@ -1,56 +1,72 @@
 CHEF_IMAGE_NAME=chef-client
 
 function chef-client() {
-  dockerrun chef-client $@
+  dockerrun $UID chef-client $@
 }
 
 function chef() {
-  dockerrun chef $@
+  dockerrun $UID chef $@
 }
 
 function kitchen() {
-  dockerrun kitchen $@
+  dockerrun $UID kitchen $@
 }
 
 function delivery() {
-  dockerrun delivery $@
+  dockerrun $UID delivery $@
 }
 
 function berks() {
-  dockerrun berks $@
+  dockerrun $UID berks $@
 }
 
 function inspec() {
-  dockerrun inspec $@
+  dockerrun $UID inspec $@
 }
 
 function knife() {
-  dockerrun knife $@
+  dockerrun $UID knife $@
 }
 
 function chef-shell() {
-  dockerrun chef-shell $@
+  dockerrun $UID chef-shell $@
+}
+
+function chef-bash() {
+  dockerrun $UID bash
+}
+
+function chef-bash-root() {
+  dockerrun 0 bash
 }
 
 function dockerrun() {
-  DIGITALOCEAN_TOKEN=$(cat ~/keys/terraform-digitalocean.token)
-  DIGITALOCEAN_SSH_KEY_IDS=$(cat ~/keys/terraform-digitalocean.ssh_keys)
+  EDITOR=vim
+  export DIGITALOCEAN_ACCESS_TOKEN=$(cat ~/keys/terraform-digitalocean.token)
+  export DIGITALOCEAN_SSH_KEY_IDS=$(cat ~/keys/terraform-digitalocean.ssh_keys)
+  USER_ID=$1
+  shift
   CMD=$1
   shift
   docker run \
     -it \
     --rm \
+    -e EDITOR \
     -e DIGITALOCEAN_ACCESS_TOKEN \
     -e DIGITALOCEAN_SSH_KEY_IDS \
-    -u $UID:$UID \
+    -u $USER_ID:$USER_ID \
     -v `pwd`:/workdir \
     -v ~/.chef/haugom.pem:/workdir/.chef/haugom.pem:ro \
     -v ~/.chef/haugom.pem:/etc/chef/client.pem:ro \
     -v ~/.ssh/id_rsa_terraform:/.ssh/id_rsa:ro \
+    -v ~/keys/encrypted_data_bag_secret:/keys/encrypted_data_bag_secret:ro \
     -v ~/.berkshelf:/.berkshelf \
+    -v ~/viminfonone:/.vimrc:ro \
     -v `pwd`/.inspec:/.inspec \
     --workdir /workdir \
     --entrypoint $CMD \
     $CHEF_IMAGE_NAME \
     "$@"
+   unset DIGITALOCEAN_ACCESS_TOKEN
+   unset DIGITALOCEAN_SSH_KEY_IDS
 }
